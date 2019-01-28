@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+    <process id="second_approve" name="二级审批流程" isExecutable="true">
+        <documentation>二级审批流程</documentation>
+        <startEvent id="startEvent" name="开始"></startEvent>
+        <userTask id="submitFrom" name="填写审批">
+            <extensionElements>
+                <activiti:formProperty id="message" name="申请信息" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="name" name="申请人姓名" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="submitTime" name="提交时间" type="date" datePattern="yyyy-MM-dd hh:mm" required="true"></activiti:formProperty>
+                <activiti:formProperty id="submitType" name="提交类型" type="string" required="true"></activiti:formProperty>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="sid-905AF026-9221-4C80-AF9A-29C581E59503" sourceRef="startEvent" targetRef="submitFrom"></sequenceFlow>
+        <exclusiveGateway id="isSubmit"></exclusiveGateway>
+        <userTask id="tlApprove" name="主管审批">
+            <extensionElements>
+                <activiti:formProperty id="tlApprove" name="主管审批结果" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="tlMessage" name="主管备注" type="string"></activiti:formProperty>
+            </extensionElements>
+        </userTask>
+        <exclusiveGateway id="tlDecide"></exclusiveGateway>
+        <userTask id="hrApprove" name="人事审批">
+            <extensionElements>
+                <activiti:formProperty id="hrApprove" name="人事审批结果" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="hrMessage" name="人事审批备注" type="string"></activiti:formProperty>
+            </extensionElements>
+        </userTask>
+        <endEvent id="endEventCancel" name="取消"></endEvent>
+        <exclusiveGateway id="hrDecide"></exclusiveGateway>
+        <endEvent id="endEvent" name="结束"></endEvent>
+        <sequenceFlow id="sid-1DC33F4A-878E-4ED6-B6E0-59AD8D579405" sourceRef="submitFrom" targetRef="isSubmit"></sequenceFlow>
+        <sequenceFlow id="sid-C5C1EECB-1D23-4582-9EC9-19B401BB671D" sourceRef="isSubmit" targetRef="tlApprove">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ submitType == "Y" || submitType == "y"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-BF9F47BD-92CC-4326-BAEC-C2E03C34DEF1" sourceRef="isSubmit" targetRef="endEventCancel">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ submitType == "N" || submitType == "n"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-9F331BCC-C862-464A-9C08-8AFEC01EA893" sourceRef="tlApprove" targetRef="tlDecide"></sequenceFlow>
+        <sequenceFlow id="sid-A607D83F-39ED-452A-B21B-219BB5BC8E87" sourceRef="tlDecide" targetRef="hrApprove">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ tlApprove == "Y" || tlApprove == "y" }]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-21BF4FE9-A9B4-40ED-BD39-56B500CF3CD5" sourceRef="tlDecide" targetRef="submitFrom">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ tlApprove == "N" || tlApprove == "n" }]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-9FF940C4-A11F-49E2-9F9C-E46D1C22F4E1" sourceRef="hrApprove" targetRef="hrDecide"></sequenceFlow>
+        <sequenceFlow id="sid-FA77D31F-88C6-459D-BDB1-396B079C5EE7" sourceRef="hrDecide" targetRef="endEvent">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ hrApprove == "Y" || hrApprove == "y"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-CD6B03DA-BDDA-445A-BBE4-7CA6B7E23226" sourceRef="hrDecide" targetRef="submitFrom">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ hrApprove == "N" || hrApprove == "n"}]]></conditionExpression>
+        </sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_second_approve">
+        <bpmndi:BPMNPlane bpmnElement="second_approve" id="BPMNPlane_second_approve">
+            <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+                <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="submitFrom" id="BPMNShape_submitFrom">
+                <omgdc:Bounds height="80.0" width="100.0" x="175.0" y="138.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="isSubmit" id="BPMNShape_isSubmit">
+                <omgdc:Bounds height="40.0" width="40.0" x="320.0" y="158.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="tlApprove" id="BPMNShape_tlApprove">
+                <omgdc:Bounds height="80.0" width="100.0" x="405.0" y="138.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="tlDecide" id="BPMNShape_tlDecide">
+                <omgdc:Bounds height="40.0" width="40.0" x="585.0" y="158.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="hrApprove" id="BPMNShape_hrApprove">
+                <omgdc:Bounds height="80.0" width="100.0" x="675.0" y="138.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endEventCancel" id="BPMNShape_endEventCancel">
+                <omgdc:Bounds height="28.0" width="28.0" x="441.0" y="270.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="hrDecide" id="BPMNShape_hrDecide">
+                <omgdc:Bounds height="40.0" width="40.0" x="820.0" y="158.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+                <omgdc:Bounds height="28.0" width="28.0" x="905.0" y="164.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="sid-1DC33F4A-878E-4ED6-B6E0-59AD8D579405" id="BPMNEdge_sid-1DC33F4A-878E-4ED6-B6E0-59AD8D579405">
+                <omgdi:waypoint x="275.0" y="178.0"></omgdi:waypoint>
+                <omgdi:waypoint x="320.0" y="178.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-BF9F47BD-92CC-4326-BAEC-C2E03C34DEF1" id="BPMNEdge_sid-BF9F47BD-92CC-4326-BAEC-C2E03C34DEF1">
+                <omgdi:waypoint x="340.0" y="198.0"></omgdi:waypoint>
+                <omgdi:waypoint x="340.0" y="284.0"></omgdi:waypoint>
+                <omgdi:waypoint x="441.0" y="284.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-21BF4FE9-A9B4-40ED-BD39-56B500CF3CD5" id="BPMNEdge_sid-21BF4FE9-A9B4-40ED-BD39-56B500CF3CD5">
+                <omgdi:waypoint x="605.0" y="198.0"></omgdi:waypoint>
+                <omgdi:waypoint x="605.0" y="332.0"></omgdi:waypoint>
+                <omgdi:waypoint x="225.0" y="332.0"></omgdi:waypoint>
+                <omgdi:waypoint x="225.0" y="218.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-905AF026-9221-4C80-AF9A-29C581E59503" id="BPMNEdge_sid-905AF026-9221-4C80-AF9A-29C581E59503">
+                <omgdi:waypoint x="130.0" y="178.0"></omgdi:waypoint>
+                <omgdi:waypoint x="175.0" y="178.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-9FF940C4-A11F-49E2-9F9C-E46D1C22F4E1" id="BPMNEdge_sid-9FF940C4-A11F-49E2-9F9C-E46D1C22F4E1">
+                <omgdi:waypoint x="775.0" y="178.0"></omgdi:waypoint>
+                <omgdi:waypoint x="820.0" y="178.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-FA77D31F-88C6-459D-BDB1-396B079C5EE7" id="BPMNEdge_sid-FA77D31F-88C6-459D-BDB1-396B079C5EE7">
+                <omgdi:waypoint x="860.0" y="178.0"></omgdi:waypoint>
+                <omgdi:waypoint x="905.0" y="178.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-CD6B03DA-BDDA-445A-BBE4-7CA6B7E23226" id="BPMNEdge_sid-CD6B03DA-BDDA-445A-BBE4-7CA6B7E23226">
+                <omgdi:waypoint x="840.0" y="158.0"></omgdi:waypoint>
+                <omgdi:waypoint x="840.0" y="91.0"></omgdi:waypoint>
+                <omgdi:waypoint x="225.0" y="91.0"></omgdi:waypoint>
+                <omgdi:waypoint x="225.0" y="138.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-C5C1EECB-1D23-4582-9EC9-19B401BB671D" id="BPMNEdge_sid-C5C1EECB-1D23-4582-9EC9-19B401BB671D">
+                <omgdi:waypoint x="360.0" y="178.0"></omgdi:waypoint>
+                <omgdi:waypoint x="405.0" y="178.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-9F331BCC-C862-464A-9C08-8AFEC01EA893" id="BPMNEdge_sid-9F331BCC-C862-464A-9C08-8AFEC01EA893">
+                <omgdi:waypoint x="505.0" y="178.0"></omgdi:waypoint>
+                <omgdi:waypoint x="585.0" y="178.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-A607D83F-39ED-452A-B21B-219BB5BC8E87" id="BPMNEdge_sid-A607D83F-39ED-452A-B21B-219BB5BC8E87">
+                <omgdi:waypoint x="625.0" y="178.0"></omgdi:waypoint>
+                <omgdi:waypoint x="675.0" y="178.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>
