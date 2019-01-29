@@ -6,7 +6,13 @@
 
     <groupId>com.yhj</groupId>
     <artifactId>action-activiti</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>hello-activiti</module>
+        <module>config-activiti</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -21,9 +27,16 @@
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
         <guava.version>23.0</guava.version>
+        <mysql.version>5.1.44</mysql.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-engine</artifactId>
@@ -53,6 +66,7 @@
             <artifactId>h2</artifactId>
             <version>1.3.176</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

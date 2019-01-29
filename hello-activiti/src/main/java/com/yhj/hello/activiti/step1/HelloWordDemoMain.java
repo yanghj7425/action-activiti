@@ -1,4 +1,4 @@
-package com.yhj.activiti.step1;
+package com.yhj.hello.activiti.step1;
 
 import org.activiti.engine.*;
 import org.activiti.engine.form.FormProperty;
@@ -21,16 +21,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-/**
- *
- */
-public class OtherDemoMain {
+
+public class HelloWordDemoMain  {
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OtherDemoMain.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HelloWordDemoMain.class);
 
 
-    public static void main(String[] args) throws ParseException {
+    public void launch() throws ParseException {
 
         ProcessEngine processEngine = getProcessEngine();
 
@@ -42,8 +40,7 @@ public class OtherDemoMain {
 
     }
 
-
-    private static void taskProcessing(ProcessEngine processEngine, ProcessInstance processInstance) throws ParseException {
+    private void taskProcessing(ProcessEngine processEngine, ProcessInstance processInstance) throws ParseException {
         TaskService taskService = processEngine.getTaskService();
 
         Scanner scanner = new Scanner(System.in);
@@ -77,7 +74,7 @@ public class OtherDemoMain {
 
     }
 
-    private static Map<String, Object> readVariables(Scanner scanner, List<FormProperty> formProperties) throws ParseException {
+    private Map<String, Object> readVariables(Scanner scanner, List<FormProperty> formProperties) throws ParseException {
         Map<String, Object> propertyVariableMap = new HashMap<>();
         for (FormProperty property : formProperties) {
             String line = readDataFromIO(scanner, property);
@@ -93,7 +90,7 @@ public class OtherDemoMain {
      * @return String
      * @throws ParseException parse date
      */
-    private static String readDataFromIO(Scanner scanner, FormProperty property) throws ParseException {
+    private String readDataFromIO(Scanner scanner, FormProperty property) throws ParseException {
         LOGGER.info("Please input  property name  [{}],which property id  [{}] and  property type [{}]", property.getName(), property.getId(), property.getType().getName());
         String line = scanner.nextLine();
         FormType propertyType = property.getType();
@@ -115,7 +112,7 @@ public class OtherDemoMain {
      * @return ProcessInstance
      * @description
      */
-    private static ProcessInstance startFlowByProcessDefinitionId(ProcessEngine processEngine, ProcessDefinition processDefinition) {
+    private ProcessInstance startFlowByProcessDefinitionId(ProcessEngine processEngine, ProcessDefinition processDefinition) {
         RuntimeService runtimeService = processEngine.getRuntimeService();
 
         return runtimeService.startProcessInstanceById(processDefinition.getId());
@@ -126,10 +123,10 @@ public class OtherDemoMain {
      * @return ProcessDefinition
      * @description read bmp20.xml file and create processDefinition
      */
-    private static ProcessDefinition getProcessDefinition(ProcessEngine processEngine) {
+    private ProcessDefinition getProcessDefinition(ProcessEngine processEngine) {
         RepositoryService repositoryService = processEngine.getRepositoryService();
         DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
-        deploymentBuilder.addClasspathResource("step1/second_approve.bpmn20.xml");
+        deploymentBuilder.addClasspathResource("second_approve.bpmn20.xml");
         Deployment deployment = deploymentBuilder.deploy();
         String deploymentId = deployment.getId();
         return repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
@@ -138,9 +135,9 @@ public class OtherDemoMain {
 
     /**
      * @return ProcessEngine
-     * @Description build a process engine
+     * @Description build a process engine this engine is base on memory
      */
-    private static ProcessEngine getProcessEngine() {
+    private ProcessEngine getProcessEngine() {
         ProcessEngineConfiguration processEngineConfiguration = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration();
         return processEngineConfiguration.buildProcessEngine();
     }
